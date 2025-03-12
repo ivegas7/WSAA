@@ -66,12 +66,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Redis Client: Jedis -->
-        <dependency>
-            <groupId>redis.clients</groupId>
-            <artifactId>jedis</artifactId>
-        </dependency>
-
         <!-- OpenAPI Swagger UI for REST API Documentation -->
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -116,7 +110,14 @@
             <artifactId>xercesImpl</artifactId>
             <version>2.12.1</version>
         </dependency>
-
+		 <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-redis</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-redis</artifactId>
+    </dependency>
     </dependencies>
 
     <build>

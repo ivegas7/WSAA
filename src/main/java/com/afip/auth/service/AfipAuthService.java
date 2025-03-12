@@ -9,16 +9,18 @@ import com.afip.auth.model.TokenResponse;
 import com.afip.auth.util.LoginTicketRequestGenerator;
 import com.afip.auth.util.XmlSigner;
 
-import java.time.Instant;
+import java.util.concurrent.TimeUnit;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class AfipAuthService {
-
-    private String token;
-    private long tokenExpirationTime;
-
+	
+	private final StringRedisTemplate stringRedisTemplate;
+	private String token;
+	
     @Value("${service}") // <servive> wsfe
     private String service;
 
@@ -51,10 +53,12 @@ public class AfipAuthService {
 
     public TokenResponse authenticate() {
         try {
-            long currentTime = Instant.now().toEpochMilli();
-
+        	
+        	ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+            token = ops.get("token"); // Recuperar token desde Redis
+            
             // Si el token no existe o ha expirado
-            if (token == null || currentTime >= tokenExpirationTime) {
+            if (token == null || token.trim().isEmpty()) {
                 log.info("El token ha expirado o no existe. Generando un nuevo token.");
 
                 // Generar el XML de solicitud de Ticket
@@ -67,17 +71,16 @@ public class AfipAuthService {
                 
                 // Invocar WSAA para obtener el token
                 try {
-                    token = XmlSigner.invokeWSAA(LoginTicketRequest_xml_cms, endpoint);
                     log.info("Token generado:");
+                    token = XmlSigner.invokeWSAA(LoginTicketRequest_xml_cms, endpoint);
+                    // Expiración del token (2 horas)
+                    ops.set("token", token, timeExpirationToken, TimeUnit.SECONDS);           //HOURS  	
                     System.out.println(token);
                 } catch (Exception e) {
                     log.error("Error al invocar WSAA", e);
                     return null;
                 }
 
-                // Expiración del token (2 horas)
-                //tokenExpirationTime = currentTime + (timeExpirationToken * 60 * 60 * 1000); // Expiración en milisegundos
-                tokenExpirationTime = currentTime + (20 * 1000);  // 10s
             }
 
             return new TokenResponse(token);
