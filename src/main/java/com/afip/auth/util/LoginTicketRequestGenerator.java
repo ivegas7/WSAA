@@ -8,7 +8,7 @@ public class LoginTicketRequestGenerator {
 
     public static String generate(String service, long timeExpirationToken) {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime expirationTime = now.plusHours(3); //add 2 hours
+        LocalDateTime expirationTime = now.plusHours(timeExpirationToken);
 
         System.out.println("[LOG] Expiration now: " + now);
         System.out.println("[LOG] Expiration exp: " + expirationTime);
