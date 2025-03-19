@@ -23,7 +23,7 @@ public class AuthController {
 
     private final AuthService AuthService;
 
-    @GetMapping("/auth/authenticate")
+    @GetMapping("/api/arca/wssa")
     public ResponseEntity<TokenResponse> authenticate() {
         log.info("Obtaining token");
         TokenResponse tokenResponse = AuthService.authenticate();

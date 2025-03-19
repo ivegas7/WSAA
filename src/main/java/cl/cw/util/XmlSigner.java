@@ -62,7 +62,7 @@ public class XmlSigner {
             log.info("Base64 encoding the request...");
             String encodedRequest = Base64.getEncoder().encodeToString(LoginTicketRequest_xml_cms);
 
-         // Invoke the service and get a response
+            // Invoke the service and get a response
             log.info("Performing WSAA service invocation...");
             LoginTicketResponse = (String) call.invoke(new Object[]{encodedRequest});
 
