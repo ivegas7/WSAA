@@ -1,4 +1,4 @@
-package com.afip.auth.util;
+package cl.cw.util;
 
 /**
  * Company: [CrossWave SPA]

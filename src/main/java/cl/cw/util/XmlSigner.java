@@ -1,4 +1,4 @@
-package com.afip.auth.util;
+package cl.cw.util;
 
 /**
  * Company: [CrossWave SPA]
@@ -30,7 +30,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 
-import com.afip.auth.errors.InternalErrorException;
+import cl.cw.errors.InternalErrorException;
 
 import lombok.extern.slf4j.Slf4j;
 

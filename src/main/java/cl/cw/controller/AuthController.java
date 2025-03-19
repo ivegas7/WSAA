@@ -1,4 +1,4 @@
-package com.afip.auth.controller;
+package cl.cw.controller;
 
 /**
  * Company: [CrossWave SPA]
@@ -7,10 +7,10 @@ package com.afip.auth.controller;
  * Description: Controller for handling AFIP authentication requests.
  */
 
-import com.afip.auth.service.AfipAuthService;
+import cl.cw.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import com.afip.auth.model.TokenResponse;
+import cl.cw.model.TokenResponse;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class AfipAuthController {
+public class AuthController {
 
-    private final AfipAuthService afipAuthService;
+    private final AuthService AuthService;
 
-    @GetMapping("/auth/afip/authenticate")
+    @GetMapping("/auth/authenticate")
     public ResponseEntity<TokenResponse> authenticate() {
         log.info("Obtaining token");
-        TokenResponse tokenResponse = afipAuthService.authenticate();
+        TokenResponse tokenResponse = AuthService.authenticate();
         return ResponseEntity.ok(tokenResponse);
     }
 }

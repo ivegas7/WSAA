@@ -1,4 +1,4 @@
-package com.afip.auth;
+package cl.cw;
 
 /**
  * Company: [CrossWave SPA]
@@ -11,10 +11,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AfipAuthApplication {
+public class AuthApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AfipAuthApplication.class, args);
+		SpringApplication.run(AuthApplication.class, args);
 	}
 
 }

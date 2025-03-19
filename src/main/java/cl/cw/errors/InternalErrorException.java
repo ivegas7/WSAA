@@ -1,4 +1,4 @@
-package com.afip.auth.errors;
+package cl.cw.errors;
 
 /**
  * Company: [CrossWave SPA]

@@ -1,4 +1,4 @@
-package com.afip.auth;
+package cl.cw;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

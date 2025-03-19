@@ -1,4 +1,4 @@
-package com.afip.auth.service;
+package cl.cw.service;
 
 /**
  * Company: [CrossWave SPA]
@@ -13,9 +13,9 @@ import org.mapdb.Serializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.afip.auth.model.TokenResponse;
-import com.afip.auth.util.LoginTicketRequestGenerator;
-import com.afip.auth.util.XmlSigner;
+import cl.cw.model.TokenResponse;
+import cl.cw.util.LoginTicketRequestGenerator;
+import cl.cw.util.XmlSigner;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +27,7 @@ import java.util.Map;
 
 @Service
 @Slf4j
-public class AfipAuthService {
+public class AuthService {
 
     private String token;
 
