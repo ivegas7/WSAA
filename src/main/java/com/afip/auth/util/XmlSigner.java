@@ -98,13 +98,7 @@ public class XmlSigner {
             
             // Obtener clave privada y certificado
             pKey = (PrivateKey) ks.getKey(signer, p12pass.toCharArray());
-            pCertificate = (X509Certificate) ks.getCertificate(signer);
-
-            
-            // Convertir la clave privada a formato PEM (Base64)
-//            String privateKeyString = getPrivateKeyString(pKey);
-//            log.info("Clave privada en formato PEM:\n{}", privateKeyString); // Aquí se muestra la clave privada
-
+            pCertificate = (X509Certificate) ks.getCertificate(signer);      
             
             // Crear una lista de certificados
             List<X509Certificate> certList = Collections.singletonList(pCertificate);
@@ -122,25 +116,11 @@ public class XmlSigner {
 
             gen.addCertificates(certStore);
             
-            
-//          String LoginTicketRequest_xml_cms2 = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" " +
-//                  "xmlns:wsaa=\"http://wsaa.view.sua.dvadac.desein.afip.gov\">" +
-//                  "<soapenv:Header/>" +
-//                  "<soapenv:Body>" +
-//                  "<wsaa:loginCms>" +
-//                  "<wsaa:in0>" + privateKeyString + "</wsaa:in0>" +
-//                  "</wsaa:loginCms>\n" +
-//                  "</soapenv:Body>\n" +
-//                  "</soapenv:Envelope>";
-    
-
             // Añadir los datos XML a la firma
             CMSTypedData data = new CMSProcessableByteArray(loginRequestXml.getBytes());
-            //CMSTypedData data2 = new CMSProcessableByteArray(LoginTicketRequest_xml_cms2.getBytes());
             
             CMSSignedData signedData = gen.generate(data, true);
-            //signedData = gen.generate(data2, true);
-            
+           
             asn1_cms = signedData.getEncoded();
 
             log.info("CMS firmado generado correctamente.");
@@ -152,24 +132,4 @@ public class XmlSigner {
         return asn1_cms;
     }
     
-    public static String getPrivateKeyString(PrivateKey privateKey) {
-        try {
-            // Convertir la clave privada a un array de bytes
-            byte[] privateKeyBytes = privateKey.getEncoded();
-
-            // Codificar la clave privada en Base64
-            String base64PrivateKey = Base64.getEncoder().encodeToString(privateKeyBytes);
-
-            // Formatear como una clave privada en formato PEM
-            StringBuilder pemPrivateKey = new StringBuilder();
-//            pemPrivateKey.append("-----BEGIN PRIVATE KEY-----\n");
-            pemPrivateKey.append(base64PrivateKey);
-//            pemPrivateKey.append("\n-----END PRIVATE KEY-----");
-
-            return pemPrivateKey.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }
