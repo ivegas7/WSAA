@@ -1,5 +1,12 @@
 package com.afip.auth.controller;
 
+/**
+ * Company: [CrossWave SPA]
+ * Project: AFIP Authentication System
+ * Author: [Ignacio Vegas Fernández]
+ * Description: Controller for handling AFIP authentication requests.
+ */
+
 import com.afip.auth.service.AfipAuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +25,7 @@ public class AfipAuthController {
 
     @GetMapping("/auth/afip/authenticate")
     public ResponseEntity<TokenResponse> authenticate() {
-        log.info("Obteniendo token");
+        log.info("Obtaining token");
         TokenResponse tokenResponse = afipAuthService.authenticate();
         return ResponseEntity.ok(tokenResponse);
     }

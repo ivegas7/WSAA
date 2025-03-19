@@ -1,5 +1,12 @@
 package com.afip.auth.errors;
 
+/**
+ * Company: [CrossWave SPA]
+ * Project: AFIP Authentication System
+ * Author: [Ignacio Vegas Fernández]
+ * Description: Handles global exceptions and provides appropriate error responses for different types of exceptions.
+ */
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,7 +16,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Maneja excepciones generales RuntimeException
+	// Handle general exceptions RuntimeException
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
@@ -21,7 +28,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    // Maneja excepciones de tipo BadRequestException
+    // Handle exceptions of type BadRequestException
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
@@ -33,7 +40,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    // Maneja excepciones de tipo IllegalArgumentException
+    // Handle exceptions of type IllegalArgumentException
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
@@ -45,7 +52,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
     
-    // Maneja excepciones de tipo ResourceNotFoundException
+    // Handle exceptions of type ResourceNotFoundException
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(
@@ -57,7 +64,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    // Manejador de excepciones generales de cualquier tipo no manejada
+    // General exception handler for any unhandled type
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(

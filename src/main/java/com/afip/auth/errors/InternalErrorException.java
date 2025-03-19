@@ -1,5 +1,13 @@
 package com.afip.auth.errors;
 
+/**
+ * Company: [CrossWave SPA]
+ * Project: AFIP Authentication System
+ * Author: [Ignacio Vegas Fernández]
+ * Description: Custom exception for handling internal server errors.
+ */
+
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

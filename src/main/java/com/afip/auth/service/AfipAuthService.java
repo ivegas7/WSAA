@@ -1,5 +1,12 @@
 package com.afip.auth.service;
 
+/**
+ * Company: [CrossWave SPA]
+ * Project: AFIP Authentication System
+ * Author: [Ignacio Vegas Fernández]
+ * Description: Description: Authentication service for token generation and management.
+ */
+
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Serializer;
@@ -14,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+
+import java.util.Base64;
 import java.util.Map;
 
 @Service
@@ -51,10 +60,13 @@ public class AfipAuthService {
 
     @PostConstruct
     public void init() {
-        db = DBMaker.fileDB(tokenDbPath).make();
+        db = DBMaker.fileDB(tokenDbPath)
+        		.checksumHeaderBypass()
+        		.make();
+        
         tokenMap = db.hashMap("tokens", Serializer.STRING, Serializer.JAVA).createOrOpen();
 
-        // Recuperamos el token de MapDB
+        // Retrieve the token from MapDB
         if (tokenMap.containsKey("token")) {
             String savedToken = (String) tokenMap.get("token");
             Long savedExpirationTime = (Long) tokenMap.get("expirationTime");
@@ -62,12 +74,12 @@ public class AfipAuthService {
             if (savedToken != null && savedExpirationTime != null && savedExpirationTime > System.currentTimeMillis()) {
                 token = savedToken;
                 expirationTime = savedExpirationTime;
-                log.info("Token recuperado desde MapDB y es válido");
+                log.info("Token retrieved from MapDB and is valid.");
             } else {
-            	log.info("Token expirado o no encontrado, generando nuevo token.");
+            	log.info("Expired or not found token, generating a new token.");
             }
         } else {
-        	log.info("No se encontró token persistido, generando nuevo token.");
+        	log.info("No persisted token found, generating a new token.");
         }
     }
 
@@ -76,31 +88,36 @@ public class AfipAuthService {
 
             if (token == null || expirationTime < System.currentTimeMillis()) {
             	
-                log.info("El token ha expirado o no existe. Generando un nuevo token.");
+                log.info("The token has expired or does not exist. Generating a new token.");
                 
-                // Generar el XML de solicitud de Ticket
+                // Generate the Ticket request XML
                 String loginRequestXml = LoginTicketRequestGenerator.generate(service, timeExpirationToken);
-                log.info("LoginTicketRequest XML generado: " + loginRequestXml);
+                log.info("LoginTicketRequest XML generated:");
+                log.info(loginRequestXml);
                 
-                // Firmar
+                // Sign
                 byte[] LoginTicketRequest_xml_cms = XmlSigner.createCMS(loginRequestXml, keystore, keystore_password, keystore_signer);
-                log.info("LoginTicketRequest_xml_cms: " + LoginTicketRequest_xml_cms);
+                log.info("LoginTicketRequest_xml_cms:");
+                log.info(Base64.getEncoder().encodeToString(LoginTicketRequest_xml_cms));
                 
-                // Invocar WSAA para obtener el token
+                // Invoke WSAA to obtain the token
                  token = XmlSigner.invoke_wsaa(LoginTicketRequest_xml_cms, endpoint);
                 
-                // Guardamos el nuevo token y la expiración en MapDB
+                // Save the new token and expiration in MapDB
                 generateNewToken(token);
-                log.info("Nuevo Token generado: " + token);
+                log.info("New token generated:");
+                log.info(token);
                 
             } else {
-                log.info("Token recuperado de caché: " + token);
+                log.info("Token retrieved from cache: ");
+                log.info(token);
             }
 
             return new TokenResponse(token);
+            
         } catch (Exception e) {
-            log.error("Error al generar o validar el token: " + e.getMessage());
-            throw new RuntimeException("Error interno al generar o validar el token: " + e.getMessage());
+            log.error("Error generating or validating the token: " + e.getMessage());
+            throw new RuntimeException("Internal error generating or validating the token: " + e.getMessage());
         }
     }
 
@@ -112,11 +129,11 @@ public class AfipAuthService {
             tokenMap.put("expirationTime", expirationTime);
             db.commit();
 
-            log.info("Nuevo token generado y guardado en MapDB.");
+            log.info("New token generated and saved in MapDB..");
             
         } catch (Exception e) {
-            log.error("Error al generar el nuevo token: " + e.getMessage());
-            throw new RuntimeException("Error interno al generar el nuevo token: " + e.getMessage());
+            log.error("Error generating the new token: " + e.getMessage());
+            throw new RuntimeException("Internal error generating the new token.: " + e.getMessage());
         }
     }
 

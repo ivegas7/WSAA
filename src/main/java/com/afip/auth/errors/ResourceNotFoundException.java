@@ -1,5 +1,12 @@
 package com.afip.auth.errors;
 
+/**
+ * Company: [CrossWave SPA]
+ * Project: AFIP Authentication System
+ * Author: [Ignacio Vegas Fernández]
+ * Description: Custom exception for handling resource not found errors.
+ */
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

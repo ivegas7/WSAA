@@ -1,5 +1,12 @@
 package com.afip.auth.util;
 
+/**
+ * Company: [CrossWave SPA]
+ * Project: AFIP Authentication System
+ * Author: [Ignacio Vegas Fernández]
+ * Description: Utility class for creating and invoking signed XML requests to the WSAA service.
+ */
+
 import java.io.FileInputStream;
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -30,85 +37,86 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class XmlSigner {
 
-    /**
-     * Invoca el servicio WSAA enviando la solicitud de autenticación.
-     * @param loginTicketRequestXmlCms XML firmado en formato CMS
-     * @param endpoint URL del servicio WSAA
-     * @return Respuesta del WSAA en formato String
-     * @throws Exception En caso de error al invocar el servicio
-     */
+	/**
+	* Invokes the WSAA service by sending the authentication request.
+	* @param loginTicketRequestXmlCms Signed XML in CMS format
+	* @param endpoint WSAA service URL
+	* @return WSAA response in String format
+	* @throws Exception If an error occurs while invoking the service
+	*/
+
     public static String invoke_wsaa(byte[] LoginTicketRequest_xml_cms, String endpoint) {
         String LoginTicketResponse = null;
         try {
-            log.info("Iniciando invocación del servicio WSAA al endpoint: {}", endpoint);
+            log.info("Starting WSAA service invocation to endpoint: {}", endpoint);
             
             Service service = new Service();
             Call call = (Call) service.createCall();
 
-            // Preparar la llamada al servicio web
+            // Prepare the call to the web service
             call.setTargetEndpointAddress(new URI(endpoint).toURL());
             call.setOperationName("loginCms");
             call.addParameter("request", XMLType.XSD_STRING, ParameterMode.IN);
             call.setReturnType(XMLType.XSD_STRING);      
 
-            log.info("Codificando la solicitud en Base64...");
+            log.info("Base64 encoding the request...");
             String encodedRequest = Base64.getEncoder().encodeToString(LoginTicketRequest_xml_cms);
 
-            // Invocar el servicio y obtener respuesta
-            log.info("Realizando la invocación al servicio WSAA...");
+         // Invoke the service and get a response
+            log.info("Performing WSAA service invocation...");
             LoginTicketResponse = (String) call.invoke(new Object[]{encodedRequest});
 
-            log.info("Respuesta obtenida del servicio WSAA.");
+            log.info("Response obtained from the WSAA service.");
         } catch (Exception e) {
-            log.error("Error al invocar el servicio WSAA: {}", e.getMessage());
-            throw new InternalErrorException("Error al invocar el servicio WSAA: " + e.getMessage());
+            log.error("Error invoking WSAA service: {}", e.getMessage());
+            throw new InternalErrorException("Error invoking WSAA service: " + e.getMessage());
         }
         return LoginTicketResponse;
     }
 
     /**
-     * Crea un CMS firmado a partir del XML de autenticación.
-     * @param loginRequestXml Contenido del XML de solicitud de autenticación
-     * @param p12file Ruta al archivo PKCS12 (.p12)
-     * @param p12pass Contraseña del archivo PKCS12
-     * @param signer Alias del firmante dentro del almacén de claves
-     * @return CMS firmado en bytes
-     */
+    * Creates a signed CMS from the authentication XML.
+    * @param loginRequestXml Contents of the authentication request XML
+    * @param p12file Path to the PKCS12 file (.p12)
+    * @param p12pass Password for the PKCS12 file
+    * @param signer Alias ​​of the signer within the keystore
+    * @return CMS signed in bytes
+    */
     public static byte[] createCMS(String loginRequestXml, String p12file, String p12pass, String signer) {
         PrivateKey pKey = null;
         X509Certificate pCertificate = null;
         byte[] asn1_cms = null;
 
         try {
-            log.info("Cargando el archivo PKCS12 desde: {}", p12file);
+            log.info("Loading PKCS12 file from: {}", p12file);
             
-            // Agregar el proveedor de seguridad BouncyCastle si no está presente
+            // Add the BouncyCastle security provider if not present
             if (Security.getProvider("BC") == null) {
-                log.info("Añadiendo el proveedor BouncyCastle...");
+                log.info("Adding the BouncyCastle provider...");
                 Security.addProvider(new BouncyCastleProvider());
             }
 
-            // Cargar el almacén de claves (KeyStore) desde el archivo PKCS#12
+            // Load the key store (KeyStore) from the PKCS#12 file
             KeyStore ks = KeyStore.getInstance("PKCS12");
             try (FileInputStream p12stream = new FileInputStream(p12file)) {
                 ks.load(p12stream, p12pass.toCharArray());
             }
 
-            log.info("Clave privada y certificado obtenidos correctamente.");
+            log.info("Private key and certificate obtained successfully.");
             
-            // Obtener clave privada y certificado
+            // Obtain private key and certificate
             pKey = (PrivateKey) ks.getKey(signer, p12pass.toCharArray());
             pCertificate = (X509Certificate) ks.getCertificate(signer);      
             
-            // Crear una lista de certificados
+            // Create a list of certificates
             List<X509Certificate> certList = Collections.singletonList(pCertificate);
             JcaCertStore certStore = new JcaCertStore(certList);
 
-            // Construcción del generador de datos CMS
+            // Construction of the CMS data generator
             CMSSignedDataGenerator gen = new CMSSignedDataGenerator();
             JcaContentSignerBuilder signerBuilder = new JcaContentSignerBuilder("SHA256withRSA").setProvider("BC");
 
-            log.info("Generando la firma CMS...");
+            log.info("Generating the CMS signature...");
             gen.addSignerInfoGenerator(
                     new JcaSignerInfoGeneratorBuilder(new JcaDigestCalculatorProviderBuilder().setProvider("BC").build())
                             .build(signerBuilder.build(pKey), pCertificate)
@@ -116,17 +124,17 @@ public class XmlSigner {
 
             gen.addCertificates(certStore);
             
-            // Añadir los datos XML a la firma
+            // Add the XML data to the signature
             CMSTypedData data = new CMSProcessableByteArray(loginRequestXml.getBytes());
             
             CMSSignedData signedData = gen.generate(data, true);
            
             asn1_cms = signedData.getEncoded();
 
-            log.info("CMS firmado generado correctamente.");
+            log.info("Signed CMS generated successfully.");
         } catch (Exception e) {
-            log.error("Error al crear el CMS firmado: {}", e.getMessage());
-            throw new InternalErrorException("Error al crear el CMS firmado: " + e.getMessage());
+            log.error("Error creating the signed CMS: {}", e.getMessage());
+            throw new InternalErrorException("Error creating the signed CMS: " + e.getMessage());
         }
 
         return asn1_cms;

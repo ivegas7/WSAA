@@ -1,5 +1,12 @@
 package com.afip.auth.errors;
 
+/**
+ * Company: [CrossWave SPA]
+ * Project: AFIP Authentication System
+ * Author: [Ignacio Vegas Fernández]
+ * Description: Represents the error response structure for API errors.
+ */
+
 import lombok.Data;
 
 @Data

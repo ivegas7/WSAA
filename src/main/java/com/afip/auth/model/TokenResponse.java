@@ -1,5 +1,12 @@
 package com.afip.auth.model;
 
+/**
+ * Company: [CrossWave SPA]
+ * Project: AFIP Authentication System
+ * Author: [Ignacio Vegas Fernández]
+ * Description: Model representing the token response returned from the authentication service.
+ */
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -7,5 +14,4 @@ import lombok.Getter;
 @AllArgsConstructor
 public class TokenResponse {
     private String token;
-//    private String sign;
 }
