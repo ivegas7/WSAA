@@ -1,1 +1,1 @@
-http://localhost:8080/auth/afip/authenticate
+http://localhost:8080/auth/authenticate
