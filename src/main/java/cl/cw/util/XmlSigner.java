@@ -39,7 +39,7 @@ public class XmlSigner {
 
 	/**
 	* Invokes the WSAA service by sending the authentication request.
-	* @param loginTicketRequestXmlCms Signed XML in CMS format
+	* @param LoginTicketRequest_xml_cms Signed XML in CMS format
 	* @param endpoint WSAA service URL
 	* @return WSAA response in String format
 	* @throws Exception If an error occurs while invoking the service

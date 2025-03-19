@@ -1,1 +1,1 @@
-http://localhost:8080/auth/authenticate
+http://localhost:8080/api/arca/wssa

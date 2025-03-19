@@ -7,7 +7,7 @@ package cl.cw.controller;
  * Description: Controller for handling AFIP authentication requests.
  */
 
-import cl.cw.service.AuthService;
+import cl.cw.service.WssaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import cl.cw.model.TokenResponse;
@@ -19,14 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class AuthController {
+public class WssaController {
 
-    private final AuthService AuthService;
+    private final WssaService WssaService;
 
     @GetMapping("/api/arca/wssa")
     public ResponseEntity<TokenResponse> authenticate() {
         log.info("Obtaining token");
-        TokenResponse tokenResponse = AuthService.authenticate();
+        TokenResponse tokenResponse = WssaService.authenticate();
         return ResponseEntity.ok(tokenResponse);
     }
 }

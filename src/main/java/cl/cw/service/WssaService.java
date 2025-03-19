@@ -27,7 +27,7 @@ import java.util.Map;
 
 @Service
 @Slf4j
-public class AuthService {
+public class WssaService {
 
     private String token;
 
